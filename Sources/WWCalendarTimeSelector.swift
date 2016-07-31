@@ -503,6 +503,8 @@ public class WWCalendarTimeSelector: UIViewController, UITableViewDelegate, UITa
     /// - Note: Defaults to 3 / 8
     public var optionLayoutLandscapeRatio: CGFloat = 3/8
     
+    /// Locale use with date formatter
+    public var optionDateFormatterLocale: NSLocale = NSLocale.currentLocale()
     // All Views
     @IBOutlet private weak var topContainerView: UIView!
     @IBOutlet private weak var bottomContainerView: UIView!
@@ -663,7 +665,7 @@ public class WWCalendarTimeSelector: UIViewController, UITableViewDelegate, UITa
         
         let firstMonth = NSDate().beginningOfYear
         for button in monthsButtons {
-            button.setTitle((firstMonth + button.tag.month).stringFromFormat("MMM"), forState: .Normal)
+            button.setTitle((firstMonth + button.tag.month).stringFromFormat("MMM", locale: optionDateFormatterLocale), forState: .Normal)
             button.titleLabel?.font = optionCalendarFontMonth
             button.tintColor = optionCalendarFontColorMonth
         }
@@ -1023,10 +1025,10 @@ public class WWCalendarTimeSelector: UIViewController, UITableViewDelegate, UITa
         else {
             if optionSelectionType == .Single {
                 if optionStyles.showMonth {
-                    dayLabel.text = optionCurrentDate.stringFromFormat("MMMM")
+                    dayLabel.text = optionCurrentDate.stringFromFormat("MMMM", locale: optionDateFormatterLocale)
                 }
                 else {
-                    dayLabel.text = optionCurrentDate.stringFromFormat("EEEE")
+                    dayLabel.text = optionCurrentDate.stringFromFormat("EEEE", locale: optionDateFormatterLocale)
                 }
             }
             else {
@@ -1034,11 +1036,11 @@ public class WWCalendarTimeSelector: UIViewController, UITableViewDelegate, UITa
             }
         }
         
-        monthLabel.text = optionCurrentDate.stringFromFormat("MMM")
-        dateLabel.text = optionStyles.showDateMonth ? optionCurrentDate.stringFromFormat("d") : nil
+        monthLabel.text = optionCurrentDate.stringFromFormat("MMM", locale: optionDateFormatterLocale)
+        dateLabel.text = optionStyles.showDateMonth ? optionCurrentDate.stringFromFormat("d", locale: optionDateFormatterLocale) : nil
         yearLabel.text = optionCurrentDate.stringFromFormat("yyyy")
-        rangeStartLabel.text = optionCurrentDateRange.start.stringFromFormat("d' 'MMM' 'yyyy")
-        rangeEndLabel.text = optionCurrentDateRange.end.stringFromFormat("d' 'MMM' 'yyyy")
+        rangeStartLabel.text = optionCurrentDateRange.start.stringFromFormat("d' 'MMM' 'yyyy", locale: optionDateFormatterLocale)
+        rangeEndLabel.text = optionCurrentDateRange.end.stringFromFormat("d' 'MMM' 'yyyy", locale: optionDateFormatterLocale)
         rangeToLabel.textColor = optionSelectorPanelFontColorDate
         if shouldResetRange {
             rangeStartLabel.textColor = optionSelectorPanelFontColorDateHighlight
@@ -1049,7 +1051,7 @@ public class WWCalendarTimeSelector: UIViewController, UITableViewDelegate, UITa
             rangeEndLabel.textColor = isSelectingStartRange ? optionSelectorPanelFontColorDate : optionSelectorPanelFontColorDateHighlight
         }
         
-        let timeText = optionCurrentDate.stringFromFormat("h':'mma").lowercaseString
+        let timeText = optionCurrentDate.stringFromFormat("h':'mma", locale: optionDateFormatterLocale).lowercaseString
         let paragraph = NSMutableParagraphStyle()
         paragraph.alignment = NSTextAlignment.Center
         let attrText = NSMutableAttributedString(string: timeText, attributes: [NSFontAttributeName: optionSelectorPanelFontTime, NSForegroundColorAttributeName: optionSelectorPanelFontColorTime, NSParagraphStyleAttributeName: paragraph])
@@ -1473,6 +1475,7 @@ public class WWCalendarTimeSelector: UIViewController, UITableViewDelegate, UITa
                 calRow.flashDuration = selAnimationDuration
                 calRow.multipleSelectionGrouping = optionMultipleSelectionGrouping
                 calRow.multipleSelectionEnabled = optionSelectionType != .Single
+                calRow.optionDateFormatterLocale = optionDateFormatterLocale
                 cell.contentView.addSubview(calRow)
                 cell.backgroundColor = UIColor.clearColor()
                 cell.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[cr]|", options: [], metrics: nil, views: ["cr": calRow]))
@@ -1540,7 +1543,7 @@ public class WWCalendarTimeSelector: UIViewController, UITableViewDelegate, UITa
             let date = multipleDates[indexPath.row]
             cell.textLabel?.font = date == multipleDatesLastAdded ? optionSelectorPanelFontMultipleSelectionHighlight : optionSelectorPanelFontMultipleSelection
             cell.textLabel?.textColor = date == multipleDatesLastAdded ? optionSelectorPanelFontColorMultipleSelectionHighlight : optionSelectorPanelFontColorMultipleSelection
-            cell.textLabel?.text = date.stringFromFormat("EEE', 'd' 'MMM' 'yyyy")
+            cell.textLabel?.text = date.stringFromFormat("EEE', 'd' 'MMM' 'yyyy", locale: optionDateFormatterLocale)
         }
         
         return cell
@@ -1884,6 +1887,7 @@ internal class WWCalendarRow: UIView {
     internal var flashDuration: NSTimeInterval!
     internal var multipleSelectionGrouping: WWCalendarTimeSelectorMultipleSelectionGrouping = .Pill
     internal var multipleSelectionEnabled: Bool = false
+    internal var optionDateFormatterLocale: NSLocale!
     
     internal var selectedDates: Set<NSDate> {
         set {
@@ -1914,7 +1918,7 @@ internal class WWCalendarRow: UIView {
         paragraph.alignment = NSTextAlignment.Center
         
         if detail.type == .Month {
-            let monthName = startDate.stringFromFormat("MMMM yyyy").capitalizedString
+            let monthName = startDate.stringFromFormat("MMMM yyyy", locale: optionDateFormatterLocale).capitalizedString
             let monthHeight = ceil(monthFont.lineHeight)
             
             let str = NSAttributedString(string: monthName, attributes: [NSFontAttributeName: monthFont, NSForegroundColorAttributeName: monthFontColor, NSParagraphStyleAttributeName: paragraph])

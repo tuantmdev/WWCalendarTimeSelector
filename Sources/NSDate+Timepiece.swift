@@ -198,8 +198,13 @@ extension NSDate {
     // MARK: - Format dates
     
     func stringFromFormat(format: String) -> String {
+        return stringFromFormat(format, locale: NSLocale.systemLocale())
+    }
+    
+    func stringFromFormat(format: String, locale: NSLocale) -> String {
         let formatter = NSDateFormatter()
         formatter.dateFormat = format
+        formatter.locale = locale
         return formatter.stringFromDate(self)
     }
     
