@@ -506,6 +506,9 @@ public class WWCalendarTimeSelector: UIViewController, UITableViewDelegate, UITa
     
     /// Locale use with date formatter
     public var optionDateFormatterLocale: NSLocale = NSLocale.currentLocale()
+    
+    public var optionDaysTitleArray: NSArray = ["S", "M", "T", "W", "T", "F", "S"]
+    
     // All Views
     @IBOutlet private weak var topContainerView: UIView!
     @IBOutlet private weak var bottomContainerView: UIView!
@@ -1479,6 +1482,7 @@ public class WWCalendarTimeSelector: UIViewController, UITableViewDelegate, UITa
                 calRow.multipleSelectionGrouping = optionMultipleSelectionGrouping
                 calRow.multipleSelectionEnabled = optionSelectionType != .Single
                 calRow.optionDateFormatterLocale = optionDateFormatterLocale
+                calRow.optionDaysTitleArray = optionDaysTitleArray
                 cell.contentView.addSubview(calRow)
                 cell.backgroundColor = UIColor.clearColor()
                 cell.contentView.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[cr]|", options: [], metrics: nil, views: ["cr": calRow]))
@@ -1891,6 +1895,7 @@ internal class WWCalendarRow: UIView {
     internal var multipleSelectionGrouping: WWCalendarTimeSelectorMultipleSelectionGrouping = .Pill
     internal var multipleSelectionEnabled: Bool = false
     internal var optionDateFormatterLocale: NSLocale!
+    internal var optionDaysTitleArray: NSArray!
     
     internal var selectedDates: Set<NSDate> {
         set {
@@ -1906,7 +1911,6 @@ internal class WWCalendarRow: UIView {
     }
     private var originalDates: Set<NSDate> = []
     private var comparisonDates: Set<NSDate> = []
-    private let days = ["S", "M", "T", "W", "T", "F", "S"]
     private let multipleSelectionBorder: CGFloat = 12
     private let multipleSelectionBar: CGFloat = 8
     
@@ -1931,8 +1935,9 @@ internal class WWCalendarRow: UIView {
             let dayHeight = ceil(dayFont.lineHeight)
             let y = (boxHeight - dayHeight) / 2
             
+            let days = optionDaysTitleArray
             for i in days.enumerate() {
-                let str = NSAttributedString(string: i.element, attributes: [NSFontAttributeName: dayFont, NSForegroundColorAttributeName: dayFontColor, NSParagraphStyleAttributeName: paragraph])
+                let str = NSAttributedString(string: i.element as! String, attributes: [NSFontAttributeName: dayFont, NSForegroundColorAttributeName: dayFontColor, NSParagraphStyleAttributeName: paragraph])
                 str.drawInRect(CGRect(x: CGFloat(i.index) * boxWidth, y: y, width: boxWidth, height: dayHeight))
             }
         }
