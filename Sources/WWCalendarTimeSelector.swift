@@ -482,6 +482,9 @@ public class WWCalendarTimeSelector: UIViewController, UITableViewDelegate, UITa
     /// `optionShowTopPanel`
     public var optionLayoutTopPanelHeight: CGFloat = 28
     
+    /// This is the height of the view contains cancel and done button
+    public var optionButtonPanelHeight: CGFloat = 44
+    
     /// The height of the calendar in portrait mode. This will be translated automatically into the width in landscape mode.
     public var optionLayoutHeight: CGFloat?
     
@@ -563,6 +566,7 @@ public class WWCalendarTimeSelector: UIViewController, UITableViewDelegate, UITa
     @IBOutlet private weak var selTimeLeftConstraint: NSLayoutConstraint!
     @IBOutlet private weak var selTimeRightConstraint: NSLayoutConstraint!
     @IBOutlet private weak var selTimeHeightConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var buttonContainerHeightConstraint: NSLayoutConstraint!
     
     // Private Variables
     private let selAnimationDuration: NSTimeInterval = 0.4
@@ -639,6 +643,9 @@ public class WWCalendarTimeSelector: UIViewController, UITableViewDelegate, UITa
         backgroundRangeView.hidden = optionSelectionType != .Range
 
         dayViewHeightConstraint.constant = optionShowTopPanel ? optionLayoutTopPanelHeight : 0
+        
+        buttonContainerHeightConstraint.constant = optionButtonPanelHeight
+        
         view.layoutIfNeeded()
         
         UIDevice.currentDevice().beginGeneratingDeviceOrientationNotifications()
