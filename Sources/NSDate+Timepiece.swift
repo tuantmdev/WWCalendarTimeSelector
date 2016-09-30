@@ -200,6 +200,7 @@ extension Date {
     func stringFromFormat(_ format: String) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = format
+        formatter.locale = Locale.init(identifier: "vi-VN")
         return formatter.string(from: self)
     }
     

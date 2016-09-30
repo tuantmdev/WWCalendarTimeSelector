@@ -1900,7 +1900,7 @@ internal class WWCalendarRow: UIView {
     }
     fileprivate var originalDates: Set<Date> = []
     fileprivate var comparisonDates: Set<Date> = []
-    fileprivate let days = ["S", "M", "T", "W", "T", "F", "S"]
+    fileprivate let days = ["CN", "H", "B", "T", "N", "S", "B"]
     fileprivate let multipleSelectionBorder: CGFloat = 12
     fileprivate let multipleSelectionBar: CGFloat = 8
     
